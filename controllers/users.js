@@ -1,16 +1,23 @@
 const User = require("../models/user");
+const {
+  invalidDataError,
+  notFoundError,
+  defaultError,
+} = require("../utils/errors");
 
-/* GET /users */
+/* GET all users */
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError.status)
+        .send({ message: defaultError.message });
     });
 };
 
-/* POST /users */
+/* POST Create User */
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
   User.create({ name, avatar })
@@ -18,23 +25,30 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res
+          .status(invalidDataError.status)
+          .send({ message: invalidDataError.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError.status)
+        .send({ message: defaultError.message });
     });
 };
 
+/* GET user by id */
 const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
-    .ofFail()
+    .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "") {
         // return res.status(400).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res
+        .status(defaultError.status)
+        .send({ message: defaultError.message });
     });
 };
 
