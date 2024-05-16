@@ -39,22 +39,6 @@ const getItems = (req, res) => {
     });
 };
 
-/* PUT update item */
-const updateItem = (req, res) => {
-  const { itemId } = req.params;
-  const { imageUrl } = req.body;
-
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
-    .orFail()
-    .then((item) => res.status(200).send({ data: item }))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(defaultError.status)
-        .send({ message: defaultError.message });
-    });
-};
-
 /* DELETE item */
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
@@ -83,4 +67,4 @@ const deleteItem = (req, res) => {
     });
 };
 
-module.exports = { createItem, getItems, updateItem, deleteItem };
+module.exports = { createItem, getItems, deleteItem };
