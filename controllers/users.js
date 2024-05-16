@@ -52,7 +52,7 @@ const getUser = (req, res) => {
           .status(notFoundError.status)
           .send({ message: notFoundError.message });
       }
-      if (err.name == "CastError") {
+      if (err.name === "CastError") {
         return res
           .status(invalidDataError.status)
           .send({ message: invalidDataError.message });
