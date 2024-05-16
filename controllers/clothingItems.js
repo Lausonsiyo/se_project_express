@@ -64,9 +64,19 @@ const deleteItem = (req, res) => {
       error.status = notFoundError.status;
       throw error;
     })
-    .then((item) => res.status(204).send({}))
+    .then((item) => res.status(200).send({ message: "Item Deleted" }))
     .catch((err) => {
       console.error(err);
+      if (err.name === "Error") {
+        return res
+          .status(notFoundError.status)
+          .send({ message: notFoundError.message });
+      }
+      if (err.name == "CastError") {
+        return res
+          .status(invalidDataError.status)
+          .send({ message: invalidDataError.message });
+      }
       return res
         .status(defaultError.status)
         .send({ message: defaultError.message });

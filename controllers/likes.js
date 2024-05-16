@@ -5,6 +5,7 @@ const {
   defaultError,
 } = require("../utils/errors");
 
+/* PUT Like item */
 const likeItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -14,15 +15,29 @@ const likeItem = (req, res) => {
     { new: true }
   )
     .orFail(() => {
-      const error = new error("Item id not found");
+      const error = new Error("Item id not found");
       throw error;
     })
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
+      if (err.name === "CastError") {
+        return res
+          .status(invalidDataError.status)
+          .send({ message: invalidDataError.message });
+      }
+      if (err.name === "Error") {
+        return res
+          .status(notFoundError.status)
+          .send({ message: notFoundError.message });
+      }
+      return res
+        .status(defaultError.status)
+        .send({ message: defaultError.message });
     });
 };
 
+/* DELETE Dislike item */
 const disLikeItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -32,12 +47,25 @@ const disLikeItem = (req, res) => {
     { new: true }
   )
     .orFail(() => {
-      const error = new error("Item id not found");
+      const error = new Error("Item id not found");
       throw error;
     })
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
+      if (err.name === "CastError") {
+        return res
+          .status(invalidDataError.status)
+          .send({ message: invalidDataError.message });
+      }
+      if (err.name === "Error") {
+        return res
+          .status(notFoundError.status)
+          .send({ message: notFoundError.message });
+      }
+      return res
+        .status(defaultError.status)
+        .send({ message: defaultError.message });
     });
 };
 

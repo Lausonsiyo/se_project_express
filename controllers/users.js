@@ -47,8 +47,15 @@ const getUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
-      if (err.name === "") {
-        // return res.status(400).send({ message: err.message });
+      if (err.name === "Error") {
+        return res
+          .status(notFoundError.status)
+          .send({ message: notFoundError.message });
+      }
+      if (err.name == "CastError") {
+        return res
+          .status(invalidDataError.status)
+          .send({ message: invalidDataError.message });
       }
       return res
         .status(defaultError.status)
