@@ -39,7 +39,11 @@ const createUser = (req, res) => {
 const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
-    .orFail()
+    .orFail(() => {
+      const error = new Error("User Id Not Found");
+      error.status = notFoundError.status;
+      throw error;
+    })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);

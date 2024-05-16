@@ -59,7 +59,11 @@ const updateItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
-    .orFail()
+    .orFail(() => {
+      const error = new Error("Item Id Not Found");
+      error.status = notFoundError.status;
+      throw error;
+    })
     .then((item) => res.status(204).send({}))
     .catch((err) => {
       console.error(err);
