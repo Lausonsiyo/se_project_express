@@ -8,7 +8,7 @@ const {
 /* GET all users */
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((users) => res.send(users))
     .catch((err) => {
       console.error(err);
       return res
@@ -44,7 +44,7 @@ const getUser = (req, res) => {
       error.status = notFoundError.status;
       throw error;
     })
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "Error") {

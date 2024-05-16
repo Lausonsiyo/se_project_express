@@ -16,7 +16,7 @@ const likeItem = (req, res) => {
       const error = new Error("Item id not found");
       throw error;
     })
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
@@ -46,7 +46,7 @@ const disLikeItem = (req, res) => {
       const error = new Error("Item id not found");
       throw error;
     })
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {

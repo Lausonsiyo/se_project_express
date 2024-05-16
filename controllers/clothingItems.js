@@ -30,7 +30,7 @@ const createItem = (req, res) => {
 /* GET all items */
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.send(items))
     .catch((err) => {
       console.error(err);
       return res
@@ -48,7 +48,7 @@ const deleteItem = (req, res) => {
       error.status = notFoundError.status;
       throw error;
     })
-    .then(() => res.status(200).send({ message: "Item Deleted" }))
+    .then(() => res.send({ message: "Item Deleted" }))
     .catch((err) => {
       console.error(err);
       if (err.name === "Error") {
