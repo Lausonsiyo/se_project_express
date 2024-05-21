@@ -1,12 +1,13 @@
 const router = require("express").Router();
+const { authorization } = require("../middlewares/auth");
 const {
   createItem,
   getItems,
   deleteItem,
 } = require("../controllers/clothingItems");
 
-router.post("/", createItem);
+router.post("/", authorization, createItem);
 router.get("/", getItems);
-router.delete("/:itemId", deleteItem);
+router.delete("/:itemId", authorization, deleteItem);
 
 module.exports = router;

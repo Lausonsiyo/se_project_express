@@ -1,8 +1,13 @@
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 const {
   invalidDataError,
   notFoundError,
   defaultError,
+  unauthorizedError,
+  conflictError,
 } = require("../utils/errors");
 
 /* GET all users */
@@ -19,20 +24,40 @@ const getUsers = (req, res) => {
 
 /* POST Create User */
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(invalidDataError.status)
-          .send({ message: invalidDataError.message });
-      }
+  const { name, avatar, email, password } = req.body;
+
+  if (!email) {
+    return res
+      .status(invalidDataError.status)
+      .send({ message: invalidDataError.message });
+  }
+  User.findOne({ email }).then((user) => {
+    if (user) {
       return res
-        .status(defaultError.status)
-        .send({ message: defaultError.message });
-    });
+        .status(conflictError.status)
+        .send({ message: conflictError.message });
+    }
+  });
+
+  bcrypt.hash(req.body.password, 10).then((hash) =>
+    User.create({ name, avatar, email, password: hash })
+      .then((user) =>
+        res
+          .status(201)
+          .send({ name: user.name, email: user.email, avatar: user.avatar })
+      )
+      .catch((err) => {
+        console.error(err);
+        if (err.name === "ValidationError") {
+          return res
+            .status(invalidDataError.status)
+            .send({ message: invalidDataError.message });
+        }
+        return res
+          .status(defaultError.status)
+          .send({ message: defaultError.message });
+      })
+  );
 };
 
 /* GET user by id */
@@ -63,4 +88,42 @@ const getUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser };
+/* POST Login User */
+const login = (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(invalidDataError.status)
+      .send({ message: invalidDataError.message });
+  }
+
+  return User.findUserByCredentials({ email, password })
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
+      res.send({ token });
+    })
+
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(unauthorizedError.status)
+        .send({ message: unauthorizedError.message });
+    });
+};
+
+/* GET Current user by Id */
+const getCurrentUser = (req, res) => {};
+
+/* PATCH Update user profile */
+const updateProfile = (req, res) => {};
+
+module.exports = {
+  getUsers,
+  createUser,
+  getUser,
+  login,
+  getCurrentUser,
+  updateProfile,
+};

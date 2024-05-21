@@ -3,9 +3,19 @@ const invalidDataError = {
   message: "Invalid data passed to the methods.",
 };
 
+const unauthorizedError = {
+  status: 401,
+  message: "Invalid Username or Password.",
+};
+
 const notFoundError = {
   status: 404,
   message: "Server cannot find the requested.",
+};
+
+const conflictError = {
+  status: 409,
+  message: "Email already in use.",
 };
 
 const defaultError = {
@@ -17,4 +27,6 @@ module.exports = {
   invalidDataError,
   notFoundError,
   defaultError,
+  conflictError,
+  unauthorizedError,
 };
