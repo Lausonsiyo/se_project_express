@@ -7,6 +7,10 @@ const unauthorizedError = {
   status: 401,
   message: "Invalid Username or Password.",
 };
+const forbiddenError = {
+  status: 403,
+  message: "An authentication error has occurred.",
+};
 
 const notFoundError = {
   status: 404,
@@ -29,4 +33,5 @@ module.exports = {
   defaultError,
   conflictError,
   unauthorizedError,
+  forbiddenError,
 };

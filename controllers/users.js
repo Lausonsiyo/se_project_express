@@ -9,6 +9,7 @@ const {
   unauthorizedError,
   conflictError,
 } = require("../utils/errors");
+const user = require("../models/user");
 
 /* GET all users */
 const getUsers = (req, res) => {
@@ -114,10 +115,65 @@ const login = (req, res) => {
 };
 
 /* GET Current user by Id */
-const getCurrentUser = (req, res) => {};
+const getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .orFail()
+    .then((id) => {
+      if (!id) {
+        return res
+          .status(notFoundError)
+          .send({ message: notFoundError.message });
+      }
+      return res.status(200).send({ id });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "Error") {
+        return res
+          .status(notFoundError.status)
+          .send({ message: notFoundError.message });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(invalidDataError.status)
+          .send({ message: invalidDataError.message });
+      }
+      return res
+        .status(defaultError.status)
+        .send({ message: defaultError.message });
+    });
+};
 
 /* PATCH Update user profile */
-const updateProfile = (req, res) => {};
+const updateProfile = (req, res) => {
+  const userId = req.user._id;
+  const { name, avatar } = req.body;
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .orFail()
+    .then((user) => {
+      res.send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "Error") {
+        return res
+          .status(notFoundError.status)
+          .send({ message: notFoundError.message });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(invalidDataError.status)
+          .send({ message: invalidDataError.message });
+      }
+      return res
+        .status(defaultError.status)
+        .send({ message: defaultError.message });
+    });
+};
 
 module.exports = {
   getUsers,

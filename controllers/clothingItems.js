@@ -3,12 +3,11 @@ const {
   invalidDataError,
   notFoundError,
   defaultError,
+  forbiddenError,
 } = require("../utils/errors");
 
 /* POST create new item */
 const createItem = (req, res) => {
-  console.log(req);
-  console.log(req.body);
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
 
@@ -48,7 +47,14 @@ const deleteItem = (req, res) => {
       error.status = notFoundError.status;
       throw error;
     })
-    .then(() => res.send({ message: "Item Deleted" }))
+    .then((item) => {
+      if (String(item.owner) !== owner)
+        return res
+          .status(forbiddenError.status)
+          .send({ message: forbiddenError.message });
+
+      return item.deleteOne().then(res.send({ message: "Item deleted" }));
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "Error") {
