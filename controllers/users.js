@@ -1,6 +1,7 @@
+const jwt = require("jsonwebtoken");
+
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
 const {
   invalidDataError,
@@ -9,7 +10,6 @@ const {
   unauthorizedError,
   conflictError,
 } = require("../utils/errors");
-const user = require("../models/user");
 
 /* GET all users */
 const getUsers = (req, res) => {
@@ -25,22 +25,19 @@ const getUsers = (req, res) => {
 
 /* POST Create User */
 const createUser = (req, res) => {
-  const { name, avatar, email, password } = req.body;
-
+  const { name, avatar, email } = req.body;
   if (!email) {
     return res
       .status(invalidDataError.status)
       .send({ message: invalidDataError.message });
   }
   User.findOne({ email }).then((user) => {
-    if (user) {
+    if (user)
       return res
         .status(conflictError.status)
         .send({ message: conflictError.message });
-    }
   });
-
-  bcrypt.hash(req.body.password, 10).then((hash) =>
+  return bcrypt.hash(req.body.password, 10).then((hash) =>
     User.create({ name, avatar, email, password: hash })
       .then((user) =>
         res
@@ -60,6 +57,41 @@ const createUser = (req, res) => {
       })
   );
 };
+// const createUser = (req, res) => {
+//   const { name, avatar, email } = req.body;
+
+//   if (!email) {
+//     return res
+//       .status(invalidDataError.status)
+//       .send({ message: invalidDataError.message });
+//   }
+//   User.findOne({ email }).then((user) => {
+//     if (user) {
+//       return res
+//         .status(conflictError.status)
+//         .send({ message: conflictError.message });
+//     }
+//   });
+//   bcrypt.hash(req.body.password, 10).then((hash) =>
+//     User.create({ name, avatar, email, password: hash })
+//       .then((user) =>
+//         res
+//           .status(201)
+//           .send({ name: user.name, email: user.email, avatar: user.avatar })
+//       )
+//       .catch((err) => {
+//         console.error(err);
+//         if (err.name === "ValidationError") {
+//           return res
+//             .status(invalidDataError.status)
+//             .send({ message: invalidDataError.message });
+//         }
+//         return res
+//           .status(defaultError.status)
+//           .send({ message: defaultError.message });
+//       })
+//   );
+// };
 
 /* GET user by id */
 const getUser = (req, res) => {
@@ -98,7 +130,7 @@ const login = (req, res) => {
       .send({ message: invalidDataError.message });
   }
 
-  return User.findUserByCredentials({ email, password })
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
