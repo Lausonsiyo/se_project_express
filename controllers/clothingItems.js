@@ -1,10 +1,4 @@
 const ClothingItem = require("../models/clothingItem");
-const {
-  invalidDataError,
-  notFoundError,
-  defaultError,
-  forbiddenError,
-} = require("../utils/errors");
 
 const { BadRequestError } = require("../utils/Errors/badRequestError");
 const { NotFoundError } = require("../utils/Errors/notFoundError");
