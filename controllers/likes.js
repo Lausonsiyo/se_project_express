@@ -1,12 +1,10 @@
 const ClothingItem = require("../models/clothingItem");
-const {
-  invalidDataError,
-  notFoundError,
-  defaultError,
-} = require("../utils/errors");
+
+const { BadRequestError } = require("../utils/Errors/badRequestError");
+const { NotFoundError } = require("../utils/Errors/notFoundError");
 
 /* PUT Like item */
-const likeItem = (req, res) => {
+const likeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
@@ -20,23 +18,17 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(invalidDataError.status)
-          .send({ message: invalidDataError.message });
+        return next(new BadRequestError("Invalid data."));
       }
       if (err.name === "Error") {
-        return res
-          .status(notFoundError.status)
-          .send({ message: notFoundError.message });
+        return next(new NotFoundError("User not found."));
       }
-      return res
-        .status(defaultError.status)
-        .send({ message: defaultError.message });
+      return next(err);
     });
 };
 
 /* DELETE Dislike item */
-const disLikeItem = (req, res) => {
+const disLikeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
@@ -50,18 +42,12 @@ const disLikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "CastError") {
-        return res
-          .status(invalidDataError.status)
-          .send({ message: invalidDataError.message });
+        return next(new BadRequestError("Invalid data."));
       }
       if (err.name === "Error") {
-        return res
-          .status(notFoundError.status)
-          .send({ message: notFoundError.message });
+        return next(new NotFoundError("User not found."));
       }
-      return res
-        .status(defaultError.status)
-        .send({ message: defaultError.message });
+      return next(err);
     });
 };
 
