@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const indexRouter = require("./routes/index");
 const errorHandler = require("./middlewares/errorHandler");
+const { errors } = require("celebrate");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -14,12 +16,23 @@ mongoose
   })
   .catch(console.error);
 
+/* CORS and Body Parsing Middleware */
 app.use(express.json());
-
 app.use(cors());
 
+/* request logger */
+app.use(requestLogger);
+
+/* Routes */
 app.use("/", indexRouter);
 
+/* error logger */
+app.use(errorLogger);
+
+/* celebrate error handler */
+app.use(errors());
+
+/* centralized handler */
 app.use(errorHandler);
 
 app.listen(PORT, () => {
