@@ -20,7 +20,7 @@ const createUser = (req, res, next) => {
   return User.findOne({ email })
     .then((existingUser) => {
       if (existingUser) {
-        next(new ConflictError("User already exists."));
+        return next(new ConflictError("User already exists."));
       }
 
       return bcrypt

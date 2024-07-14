@@ -18,3 +18,17 @@ The back-end project is focused on creating a server for the WTWR application. Y
 - React Router Use Location State Hook: A hook that allows you to access the state of the current location in React.
 - React Router Use Params Hook: A hook that allows you to access the params of the current route in React.
 - React Router Use Route Hook: A hook that allows you to access the route of the current route in React.
+
+## Domain name
+
+jumpingcrab.com/
+
+## link
+
+https://finalproject-tt.jumpingcrab.com/
+finalproject-tt.jumpingcrab.com
+www.finalproject-tt.jumpingcrab.com
+
+## Back end
+
+api.finalproject-tt.jumpingcrab.com

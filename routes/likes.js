@@ -4,7 +4,9 @@ const { authorization } = require("../middlewares/auth");
 
 const { likeItem, disLikeItem } = require("../controllers/likes");
 
-router.put("/:itemId/likes", authorization, likeItem);
-router.delete("/:itemId/likes", authorization, disLikeItem);
+const { validateId } = require("../middlewares/validation");
+
+router.put("/:itemId/likes", validateId, authorization, likeItem);
+router.delete("/:itemId/likes", validateId, authorization, disLikeItem);
 
 module.exports = router;

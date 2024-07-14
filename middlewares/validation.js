@@ -19,6 +19,7 @@ const validateClothingItem = celebrate({
       "string.empty": 'The "imageUrl" field must be filled in',
       "string.uri": 'the "imageUrl" field must be a valid url',
     }),
+    weather: Joi.string().valid("hot", "warm", "cold").required(),
   }),
 });
 
@@ -65,9 +66,24 @@ const validateId = celebrate({
   }),
 });
 
+const validateUpdateUserInfo = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30).messages({
+      "string.min": 'The minimum length of the "name" field is 2',
+      "string.max": 'The maximum length of the "name" field is 30',
+      "string.empty": 'The "name" field must be filled in',
+    }),
+    avatar: Joi.string().required().custom(urlValidation).messages({
+      "string.empty": 'The "imageUrl" field must be filled in',
+      "string.uri": 'the "imageUrl" field must be a valid url',
+    }),
+  }),
+});
+
 module.exports = {
   validateClothingItem,
   validateId,
   validateLogin,
   validateUserInfo,
+  validateUpdateUserInfo,
 };

@@ -6,6 +6,8 @@ const indexRouter = require("./routes/index");
 const errorHandler = require("./middlewares/errorHandler");
 const { errors } = require("celebrate");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+const helmet = require("helmet");
+const rateLimiter = require("./middlewares/rateLimiter");
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -16,6 +18,12 @@ mongoose
     console.log("Connected to MongoDB");
   })
   .catch(console.error);
+
+/*  Use Helmet to set security headers */
+app.use(helmet());
+
+/* Use the rate limiter middleware */
+app.use(rateLimiter);
 
 /* CORS and Body Parsing Middleware */
 app.use(express.json());
