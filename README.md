@@ -32,3 +32,13 @@ www.finalproject-tt.jumpingcrab.com
 ## Back end
 
 api.finalproject-tt.jumpingcrab.com
+
+## DATA BASE CREDENTIAS
+
+# PASS
+
+ifMRk96tTXQeaTzf
+
+# USER
+
+andreslauson_db_user
